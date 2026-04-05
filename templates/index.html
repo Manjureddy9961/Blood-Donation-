@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <h1>Donate <span>Blood</span>,<br>Save a Life Today</h1>
+    <p>Join the Rakth Dhaan community and be a hero. Connect with hospitals and help those in need efficiently and
+        quickly.</p>
+    <div class="cta-group">
+        <a href="{% url 'register_donor' %}" class="btn">Become a Donor</a>
+        <a href="#about" class="btn btn-outline" style="margin-left: 1rem;">Learn More</a>
+    </div>
+</section>
+
+<section id="roles" style="padding: 2rem 5%; background: var(--dark);">
+    <h2>Login / Register</h2>
+    <div class="card-container" style="padding: 2rem 0;">
+        <!-- Donor -->
+        <div class="card" style="text-align: center;">
+            <h3>Donor</h3>
+            <p style="margin-bottom: 1.5rem;">Donate blood and save lives.</p>
+            <a href="{% url 'login' %}" class="btn">Login as Donor</a>
+        </div>
+
+        <!-- Hospital -->
+        <div class="card" style="text-align: center;">
+            <h3>Hospital</h3>
+            <p style="margin-bottom: 1.5rem;">Request blood for patients.</p>
+            <a href="{% url 'login' %}" class="btn">Login as Hospital</a>
+        </div>
+
+        <!-- Admin -->
+        <div class="card" style="text-align: center;">
+            <h3>Admin</h3>
+            <p style="margin-bottom: 1.5rem;">Manage the Rakth Dhaan platform.</p>
+            <a href="/admin/" class="btn btn-outline" target="_blank">Admin Login</a>
+        </div>
+    </div>
+</section>
+
+<section id="about">
+    <h2>About Us</h2>
+    <div class="card-container">
+        <div class="card">
+            <h3>Our Mission</h3>
+            <p>To bridge the gap between blood donors and recipients, ensuring no life is lost due to shortage of blood.
+            </p>
+        </div>
+        <div class="card">
+            <h3>How It Works</h3>
+            <p>Donors register, searching hospitals request blood, and we facilitate the connection seamlessly.</p>
+        </div>
+        <div class="card">
+            <h3>Community</h3>
+            <p>A growing network of lifesavers committing to making a difference in society.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Shared Stats (Roadmap, Achievements, Charts) -->
+{% include 'includes/shared_stats.html' %}
+
+
+
+{% include 'includes/vision_banner.html' %}
+{% endblock %}

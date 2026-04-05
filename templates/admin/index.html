@@ -1,0 +1,11 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+{{ block.super }}
+
+<!-- Shared Stats for Admin -->
+<div style="margin-top: 4rem;">
+    {% include 'includes/shared_stats.html' %}
+    {% include 'includes/vision_banner.html' %}
+</div>
+{% endblock %}

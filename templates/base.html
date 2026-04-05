@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rakth Dhaan - Donate Blood, Save Lives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{% url 'index' %}">
+                <span class="drop">🩸</span> Rakth Dhaan
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'index' %}#about">About</a></li>
+            <li><a href="{% url 'index' %}#shared-roadmap">Roadmap</a></li>
+            <li><a href="{% url 'achievements' %}">Achievements</a></li>
+            <li><a href="{% url 'index' %}#shared-location">Location</a></li>
+        </ul>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+            {% if user.donor %}
+            <a href="{% url 'donor_dashboard' %}" class="btn">Dashboard</a>
+            {% elif user.hospital %}
+            <a href="{% url 'hospital_dashboard' %}" class="btn">Dashboard</a>
+            {% else %}
+            <a href="/admin/" class="btn">Admin</a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn">Login/Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="messages-container"
+        style="position: fixed; top: 100px; right: 20px; z-index: 9999; pointer-events: none;">
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}"
+            style="padding: 15px; margin-bottom: 10px; border-radius: 5px; color: white; pointer-events: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                {% if message.tags == 'success' %}background-color: #28a745;{% elif message.tags == 'error' %}background-color: #dc3545;{% else %}background-color: #007bff;{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <script>
+            console.log("Messages script running");
+            setTimeout(function () {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.style.display = 'none', 500);
+                });
+            }, 5000);
+        </script>
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+
+
+        <!-- Chatbot -->
+        <div class="chatbot-container">
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-header">
+                    <h3>Hubert (AI Assistant)</h3>
+                    <button onclick="toggleChat()"
+                        style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">×</button>
+                </div>
+                <div class="chat-body" id="chatBody">
+                    <div class="message bot">
+                        <p>Hello! I am Hubert. How can I help you today?</p>
+                    </div>
+                    <div class="chat-options">
+                        <button onclick="handleQuestion('donate')">How do I donate?</button>
+                        <button onclick="handleQuestion('request')">I need blood!</button>
+                        <button onclick="handleQuestion('register')">How to register?</button>
+                        <button onclick="handleQuestion('organ')">Organ Donation?</button>
+                    </div>
+                </div>
+            </div>
+            <button class="chat-fab" onclick="toggleChat()">💬</button>
+        </div>
+
+        <script>
+            function toggleChat() {
+                const window = document.getElementById('chatWindow');
+                if (window.style.display === 'none' || window.style.display === '') {
+                    window.style.display = 'flex';
+                } else {
+                    window.style.display = 'none';
+                }
+            }
+
+            function handleQuestion(type) {
+                const chatBody = document.getElementById('chatBody');
+
+                // User Message
+                let userText = '';
+                let botText = '';
+
+                if (type === 'donate') {
+                    userText = 'How do I donate?';
+                    botText = 'To donate, please register as a "Donor" from the homepage. Once logged in, you can book a donation slot via your dashboard!';
+                } else if (type === 'request') {
+                    userText = 'I need blood!';
+                    botText = 'If you seek blood, please register as a "Hospital". From the hospital dashboard, you can request blood from our network of donors.';
+                } else if (type === 'register') {
+                    userText = 'How to register?';
+                    botText = 'Click "Login/Register" in the top right. Choose "Donor" to give blood or "Hospital" to request blood.';
+                } else if (type === 'organ') {
+                    userText = 'Organ Donation?';
+                    botText = 'We recently launched Phase 2! Logged-in donors can now pledge organs (Heart, Eyes, etc.) directly from their dashboard.';
+                }
+
+                // Append User Msg
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user';
+                userMsg.innerHTML = `<p>${userText}</p>`;
+                chatBody.insertBefore(userMsg, chatBody.querySelector('.chat-options'));
+
+                // Simulate typing
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'message bot';
+                    botMsg.innerHTML = `<p>${botText}</p>`;
+                    chatBody.insertBefore(botMsg, chatBody.querySelector('.chat-options'));
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }, 500);
+            }
+        </script>
+
+        <footer>
+            <p>&copy; 2024 Rakth Dhaan. Saving Lives Together.</p>
+        </footer>
+</body>
+
+</html>

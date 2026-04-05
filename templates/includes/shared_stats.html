@@ -1,0 +1,258 @@
+{% load static %}
+<!-- Shared Dashboard Sections -->
+<div class="shared-stats-container" style="max-width: 1200px; margin: 4rem auto; padding: 0 20px;">
+
+    <!-- 1. Vertical Roadmap (Copied & Refined) -->
+    <section id="shared-roadmap" style="margin-bottom: 4rem;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--light);">Our Journey</h2>
+        <div class="timeline">
+            <!-- June 2026 -->
+            <div class="timeline-item timeline-left">
+                <div class="timeline-content">
+                    <span class="timeline-date">June 2026</span>
+                    <h3>Project Launch</h3>
+                    <p>Official release of Rakth Dhaan. Connecting donors and hospitals efficiently.</p>
+                </div>
+            </div>
+
+            <!-- June 2027 -->
+            <div class="timeline-item timeline-right">
+                <div class="timeline-content">
+                    <span class="timeline-date">June 2027</span>
+                    <h3>Organ Donation</h3>
+                    <p>Expanding our mission to include organ donation matching and awareness.</p>
+                </div>
+            </div>
+
+            <!-- June 2028 -->
+            <div class="timeline-item timeline-left">
+                <div class="timeline-content">
+                    <span class="timeline-date">June 2028</span>
+                    <h3>Pan India Expansion</h3>
+                    <p>Reaching every corner of the country to ensure no life is lost due to shortages.</p>
+                </div>
+            </div>
+
+            <!-- June 2029 -->
+            <div class="timeline-item timeline-right">
+                <div class="timeline-content">
+                    <span class="timeline-date">June 2029</span>
+                    <h3>Mobile Application</h3>
+                    <p>Launching the dedicated mobile app for real-time tracking and easier access.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Beautiful Achievements -->
+    <section id="shared-achievements" style="margin-bottom: 4rem;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--light);">Our Impact</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <!-- Achievement Card 1 -->
+            <div class="achievement-card" style="
+                background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 20px;
+                padding: 2rem;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                transition: transform 0.3s;
+            " onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🩸</div>
+                <h3 style="font-size: 2.5rem; color: #e63946; margin-bottom: 0.5rem;">1000+</h3>
+                <p style="color: #a8dadc; font-size: 1.1rem;">Registered Donors</p>
+            </div>
+
+            <!-- Achievement Card 2 -->
+            <div class="achievement-card" style="
+                background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 20px;
+                padding: 2rem;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                transition: transform 0.3s;
+            " onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🏥</div>
+                <h3 style="font-size: 2.5rem; color: #2ecc71; margin-bottom: 0.5rem;">50+</h3>
+                <p style="color: #a8dadc; font-size: 1.1rem;">Partner Hospitals</p>
+            </div>
+
+            <!-- Achievement Card 3 -->
+            <div class="achievement-card" style="
+                background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 20px;
+                padding: 2rem;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                transition: transform 0.3s;
+            " onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">❤️</div>
+                <h3 style="font-size: 2.5rem; color: #f1c40f; margin-bottom: 0.5rem;">500+</h3>
+                <p style="color: #a8dadc; font-size: 1.1rem;">Lives Saved</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. South India Pie Chart -->
+    <section id="shared-charts">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--light);">Donor Distribution
+        </h2>
+        <div style="
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        ">
+            <canvas id="southIndiaChart"></canvas>
+        </div>
+    </section>
+
+    <!-- 4. Yearly Progress Chart -->
+    <section id="shared-yearly-progress" style="margin-bottom: 4rem;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--light);">Yearly Public Reach
+            & Development Progress</h2>
+        <div style="
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        ">
+            <canvas id="yearlyProgressChart"></canvas>
+        </div>
+    </section>
+
+    <!-- 5. Location Section -->
+    <section id="shared-location">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--light);">Our Location</h2>
+        <div style="text-align: center;">
+            <p style="font-size: 1.2rem; color: #a8dadc; margin-bottom: 2rem;">
+                <span style="font-size: 1.5rem;">📍</span> Srinivasam Complex, Tirupati, Andhra Pradesh
+            </p>
+            <!-- Google Maps Embed -->
+            <div style="
+                width: 100%; 
+                height: 400px; 
+                background: var(--glass); 
+                border-radius: 20px; 
+                overflow: hidden; 
+                border: 1px solid var(--glass-border);
+                box-shadow: var(--shadow);
+            ">
+                <iframe width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://maps.google.com/maps?q=Srinivasam+Complex,+Tirupati&t=&z=15&ie=UTF8&iwloc=&output=embed">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // South India Pie Chart
+        const ctx = document.getElementById('southIndiaChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Andhra Pradesh', 'Telangana', 'Tamil Nadu', 'Karnataka', 'Kerala'],
+                datasets: [{
+                    label: '# of Donors',
+                    data: [35, 30, 25, 20, 15],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                    borderWidth: 1,
+                    borderColor: '#1a1a2e'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#fff', font: { size: 14, family: "'Outfit', sans-serif" } }
+                    },
+                    title: {
+                        display: true,
+                        text: 'South India Donor Statistics',
+                        color: '#fff',
+                        font: { size: 18, family: "'Outfit', sans-serif" }
+                    }
+                }
+            }
+        });
+
+        // Yearly Progress Mixed Chart
+        const ctxProgress = document.getElementById('yearlyProgressChart').getContext('2d');
+        new Chart(ctxProgress, {
+            type: 'bar',
+            data: {
+                labels: ['2024', '2025', '2026', '2027', '2028'],
+                datasets: [
+                    {
+                        label: 'Public Reach (People Served)',
+                        data: [100, 5000, 50000, 200000, 1000000],
+                        backgroundColor: '#DC3545', // Red
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        label: 'Development Progress (%)',
+                        data: [15, 45, 75, 90, 100],
+                        backgroundColor: '#28A745', // Green
+                        yAxisID: 'y1',
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'People Served', color: '#fff' },
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 0,
+                        max: 100,
+                        title: { display: true, text: 'Progress (%)', color: '#fff' },
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#fff' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff', font: { size: 14, family: "'Outfit', sans-serif" } }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#000',
+                        bodyColor: '#000',
+                        borderColor: '#ccc',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+    });
+</script>

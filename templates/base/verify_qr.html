@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Verify Donation QR{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5 pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title text-center mb-0"><i class="fas fa-check-circle"></i> Donation Verification</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if donation.donation_status == 'Completed' %}
+                        <div class="alert alert-success text-center">
+                            <h5><i class="fas fa-certificate"></i> Verified Completed Donation</h5>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning text-center">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Pending Donation</h5>
+                        </div>
+                    {% endif %}
+                    
+                    <h4 class="border-bottom pb-2 mt-4">Donor Details</h4>
+                    <table class="table table-bordered mt-3">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%">Donor Name</th>
+                                <td>{{ donation.donor.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Blood Group</th>
+                                <td>
+                                    <span class="badge bg-danger fs-6">{{ donation.donor.blood_group }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Contact Number</th>
+                                <td>{{ donation.donor.mobile_no }}</td>
+                            </tr>
+                            <tr>
+                                <th>Donation ID</th>
+                                <td>#REQ-{{ donation.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Completed Date</th>
+                                <td>{{ donation.request_date|date:"F d, Y" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Hospital</th>
+                                <td>
+                                    {% if donation.hospital %}
+                                        {{ donation.hospital.hospital_name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

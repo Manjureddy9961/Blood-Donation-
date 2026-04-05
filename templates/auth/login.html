@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <div class="form-box">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div style="color: #ff6b6b; margin-bottom: 1rem; text-align: center;">
+                <p>Invalid username or password.</p>
+            </div>
+            {% endif %}
+
+            <div class="input-group">
+                <label for="id_username">Email (Username)</label>
+                {{ form.username }}
+            </div>
+
+            <div class="input-group">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%;">Login</button>
+        </form>
+        <div style="margin-top: 2rem; text-align: center;">
+            <p>Don't have an account?</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                <a href="{% url 'register_donor' %}" class="btn btn-outline" style="font-size: 0.9rem;">Register as
+                    Donor</a>
+                <a href="{% url 'register_hospital' %}" class="btn btn-outline" style="font-size: 0.9rem;">Register as
+                    Hospital</a>
+            </div>
+            <div style="margin-top: 1rem; text-align: center;">
+                <a href="/admin/" style="color: #cbd5e1; font-size: 0.8rem; text-decoration: underline;">Admin Login</a>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    // Add class to inputs for styling if not using widget tweaks
+    document.querySelectorAll('input').forEach(input => {
+        if (!input.classList.contains('btn')) {
+            // styles are applied via css selector .input-group input
+        }
+    });
+</script>
+{% endblock %}

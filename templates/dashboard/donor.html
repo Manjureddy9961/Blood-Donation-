@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="padding-top: 100px;">
+    <h2>Donor Dashboard</h2>
+
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+        <!-- Profile Card -->
+        <div class="card" style="flex: 1; min-width: 300px;">
+            <h3>My Profile</h3>
+            <p><strong>Name:</strong> {{ donor.name }}</p>
+            <p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
+            <p><strong>Mobile:</strong> {{ donor.mobile_no }}</p>
+            <p><strong>Address:</strong> {{ donor.address }}</p>
+        </div>
+
+        <!-- Book Slot -->
+        <div class="card" style="flex: 1; min-width: 300px;">
+            <h3>Donate Blood</h3>
+            <p>Ready to save a life? Book a donation slot now.</p>
+            <form method="post" style="margin-top: 1rem;">
+                {% csrf_token %}
+                <input type="hidden" name="book_slot" value="true">
+                <input type="date" name="slot_date" required style="padding: 0.5rem; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #3498db; width: 100%; margin-bottom: 1rem;">
+                <button type="submit" class="btn">Book Slot</button>
+            </form>
+        </div>
+
+        <!-- Organ Pledge -->
+        <div class="card" style="flex: 1; min-width: 300px; border-color: #a8dadc;">
+            <h3 style="color: #a8dadc;">Organ Donation Phase 2</h3>
+            {% if organ_donor %}
+            <p>You have pledged to donate:</p>
+            <ul style="list-style: none; margin: 1rem 0;">
+                {% if organ_donor.donate_heart %}<li>❤️ Heart</li>{% endif %}
+                {% if organ_donor.donate_kidneys %}<li>🩺 Kidneys</li>{% endif %}
+                {% if organ_donor.donate_liver %}<li>🧬 Liver</li>{% endif %}
+                {% if organ_donor.donate_eyes %}<li>👁️ Eyes</li>{% endif %}
+                {% if organ_donor.donate_lungs %}<li>🫁 Lungs</li>{% endif %}
+                {% if organ_donor.donate_pancreas %}<li>⚕️ Pancreas</li>{% endif %}
+            </ul>
+            <div class="alert"
+                style="background: rgba(46, 204, 113, 0.2); padding: 0.5rem; border-radius: 10px; text-align: center;">
+                Verified Donor ✅
+            </div>
+            {% else %}
+            <p>Pledge your organs and save up to 8 lives.</p>
+            <form method="post" style="margin-top: 1rem;">
+                {% csrf_token %}
+                <input type="hidden" name="pledge_organs" value="true">
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: left; margin-bottom: 1rem;">
+                    <label>{{ organ_form.donate_heart }} Heart</label>
+                    <label>{{ organ_form.donate_kidneys }} Kidneys</label>
+                    <label>{{ organ_form.donate_liver }} Liver</label>
+                    <label>{{ organ_form.donate_eyes }} Eyes</label>
+                    <label>{{ organ_form.donate_lungs }} Lungs</label>
+                    <label>{{ organ_form.donate_pancreas }} Pancreas</label>
+                </div>
+                <button type="submit" class="btn"
+                    style="background: #a8dadc; color: var(--dark); border-color: #a8dadc;">Pledge Now</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- History -->
+    <div style="margin-top: 3rem; background: var(--glass); padding: 2rem; border-radius: 20px;">
+        <h3>Donation History</h3>
+        <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                    <th style="padding: 1rem;">Slot Date</th>
+                    <th style="padding: 1rem;">Hospital</th>
+                    <th style="padding: 1rem;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in history %}
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 1rem;">
+                        {% if req.slot_date %}
+                            {{ req.slot_date|date:"M d, Y" }}
+                        {% else %}
+                            {{ req.request_date|date:"M d, Y" }}
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem;">
+                        {% if req.hospital %}
+                        {{ req.hospital.hospital_name }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem;">
+                        <span
+                            class="status-badge {% if req.status == 'Accepted' %}status-accepted{% elif req.status == 'Rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                            {{ req.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="padding: 1rem; text-align: center;">No donations yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- Gallery Section -->
+    <div style="margin-top: 3rem;">
+        <h3>My Gallery</h3>
+        <div class="card" style="margin-top: 1rem;">
+            <p>Upload photos of your donation moments!</p>
+            <form method="post" enctype="multipart/form-data"
+                style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+                {% csrf_token %}
+                <input type="hidden" name="upload_image" value="true">
+                <input type="file" name="image" required
+                    style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 5px;">
+                <input type="text" name="caption" placeholder="Caption (optional)"
+                    style="background: rgba(255,255,255,0.1); border: none; padding: 0.5rem; color: white; border-radius: 5px;">
+                <button type="submit" class="btn" style="padding: 0.5rem 1rem;">Upload</button>
+            </form>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                {% for img in gallery_images %}
+                <div style="position: relative; border-radius: 10px; overflow: hidden;">
+                    <img src="{{ img.image.url }}" alt="{{ img.caption }}"
+                        style="width: 100%; height: 150px; object-fit: cover;">
+                    <a href="{% url 'delete_image' img.id %}" onclick="return confirm('Delete this image?')"
+                        style="position: absolute; top: 5px; right: 5px; background: red; color: white; width: 20px; height: 20px; text-align: center; line-height: 20px; border-radius: 50%; text-decoration: none;">&times;</a>
+                    {% if img.caption %}
+                    <div
+                        style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); padding: 0.3rem; font-size: 0.8rem; text-align: center;">
+                        {{ img.caption }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p>No photos uploaded yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Stats -->
+    {% include 'includes/shared_stats.html' %}
+</section>
+
+{% include 'includes/vision_banner.html' %}
+{% endblock %}

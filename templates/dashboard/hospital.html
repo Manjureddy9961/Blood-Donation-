@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="padding-top: 100px;">
+    <h2>Hospital Dashboard</h2>
+
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+        <!-- Profile Card -->
+        <div class="card" style="flex: 1; min-width: 300px;">
+            <h3>Hospital Info</h3>
+            <p><strong>Name:</strong> {{ hospital.hospital_name }}</p>
+            <p><strong>Location:</strong> {{ hospital.location }}</p>
+            <p><strong>Contact:</strong> {{ hospital.hospital_contact_no }}</p>
+            <p><strong>ICU Available:</strong> {{ hospital.icu_availability|yesno:"Yes,No" }}</p>
+            <p><strong>Mobile Van:</strong> {{ hospital.mobile_van_availability|yesno:"Yes,No" }}</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="card" style="flex: 1; min-width: 300px;">
+            <h3>Inventory Status</h3>
+            <p><strong>Available Stock:</strong> Sufficient</p>
+            <p><strong>Pending Requests:</strong> {{ requests.count }}</p>
+        </div>
+
+        <!-- Organ Registry -->
+        <div class="card" style="flex: 1; min-width: 300px; border-color: #a8dadc;">
+            <h3 style="color: #a8dadc;">Organ Registry</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: left;">
+                <p>❤️ Hearts: {{ organ_stats.Hearts }}</p>
+                <p>🩺 Kidneys: {{ organ_stats.Kidneys }}</p>
+                <p>🧬 Livers: {{ organ_stats.Livers }}</p>
+                <p>👁️ Eyes: {{ organ_stats.Eyes }}</p>
+                <p>🫁 Lungs: {{ organ_stats.Lungs }}</p>
+                <p>⚕️ Pancreases: {{ organ_stats.Pancreases }}</p>
+            </div>
+        </div>
+        
+        <!-- Raise Request -->
+        <div class="card" style="flex: 1; min-width: 300px; border-color: #e74c3c;">
+            <h3 style="color: #e74c3c;">Raise Blood Request</h3>
+            <p>Raise a system-wide request or an emergency alert.</p>
+            <form method="post" style="margin-top: 1rem;">
+                {% csrf_token %}
+                <input type="hidden" name="raise_request" value="true">
+                
+                <select name="blood_group" required style="width: 100%; padding: 0.5rem; border-radius: 5px; background: rgba(255,255,255,0.1); color: black; margin-bottom: 1rem;">
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <input type="checkbox" name="is_emergency" id="is_emergency" style="transform: scale(1.5);">
+                    <label for="is_emergency" style="color: #e74c3c; font-weight: bold; cursor: pointer;">🚨 Mark as Emergency</label>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; background: #e74c3c; border-color: #e74c3c; color: white;">Broadcast Request & Notify</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Requests -->
+    <div style="margin-top: 3rem; background: var(--glass); padding: 2rem; border-radius: 20px;">
+        <h3>Incoming Donation Requests</h3>
+        <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                    <th style="padding: 1rem;">Donor Name</th>
+                    <th style="padding: 1rem;">Blood Group</th>
+                    <th style="padding: 1rem;">Location</th>
+                    <th style="padding: 1rem;">Date</th>
+                    <th style="padding: 1rem;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 1rem;">{{ req.donor.name }}</td>
+                    <td style="padding: 1rem;">{{ req.donor.blood_group }}</td>
+                    <td style="padding: 1rem;">{{ req.donor.address }}</td>
+                    <td style="padding: 1rem;">{{ req.request_date|date:"M d, Y" }}</td>
+                    <td style="padding: 1rem;">
+                        <a href="{% url 'update_request_status' req.id 'Accepted' %}" class="btn"
+                            style="padding: 0.3rem 0.8rem; font-size: 0.9rem; background: #2ecc71; border-color: #2ecc71;">Accept</a>
+                        <a href="{% url 'update_request_status' req.id 'Rejected' %}" class="btn"
+                            style="padding: 0.3rem 0.8rem; font-size: 0.9rem; background: #e74c3c; border-color: #e74c3c;">Reject</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="padding: 1rem; text-align: center;">No pending requests.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Active Hospital Requests -->
+    <div style="margin-top: 3rem; background: var(--glass); padding: 2rem; border-radius: 20px;">
+        <h3>Your Active Blood Requests</h3>
+        <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                    <th style="padding: 1rem;">Blood Group</th>
+                    <th style="padding: 1rem;">Date Raised</th>
+                    <th style="padding: 1rem;">Type / Priority</th>
+                    <th style="padding: 1rem;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hreq in active_hospital_requests %}
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 1rem; font-weight: bold; font-size: 1.1rem;">{{ hreq.blood_group }}</td>
+                    <td style="padding: 1rem;">{{ hreq.created_at|date:"M d, Y H:i" }}</td>
+                    <td style="padding: 1rem;">
+                        {% if hreq.is_emergency %}
+                            <span style="background: rgba(231, 76, 60, 0.2); color: #ff6b6b; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; border: 1px solid #e74c3c;">🚨 EMERGENCY</span>
+                        {% else %}
+                            <span style="background: rgba(52, 152, 219, 0.2); color: #3498db; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem;">Routine</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem;">{{ hreq.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="padding: 1rem; text-align: center;">You have no active requests.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- AI Donor Recommendation -->
+    <div style="margin-top: 3rem; background: rgba(52, 152, 219, 0.1); padding: 2rem; border-radius: 20px; border: 1px solid #3498db;">
+        <h3 style="color: #3498db;">🤖 AI Donor Recommendation</h3>
+        <p>Use our Machine Learning model (KNN) to find the best matching donors based on blood group and location.</p>
+        <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem; flex-wrap: wrap;">
+            <select id="ml-blood-group" style="padding: 0.5rem; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #3498db;">
+                <option value="" style="color: black;">Select Blood Group</option>
+                <option value="A+" style="color: black;">A+</option>
+                <option value="A-" style="color: black;">A-</option>
+                <option value="B+" style="color: black;">B+</option>
+                <option value="B-" style="color: black;">B-</option>
+                <option value="AB+" style="color: black;">AB+</option>
+                <option value="AB-" style="color: black;">AB-</option>
+                <option value="O+" style="color: black;">O+</option>
+                <option value="O-" style="color: black;">O-</option>
+            </select>
+            <input type="text" id="ml-location" placeholder="Enter Location (e.g., City)" style="padding: 0.5rem; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #3498db;">
+            <button onclick="fetchRecommendations()" class="btn" style="background: #3498db; border-color: #3498db; padding: 0.5rem 1rem;">🔍 Find Donors</button>
+        </div>
+        
+        <div id="ml-results" style="margin-top: 1.5rem; display: none;">
+            <h4>Top Recommended Donors</h4>
+            <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                <thead>
+                    <tr style="text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                        <th style="padding: 1rem;">Name</th>
+                        <th style="padding: 1rem;">Blood Group</th>
+                        <th style="padding: 1rem;">Location</th>
+                        <th style="padding: 1rem;">Days Since Last Donation</th>
+                    </tr>
+                </thead>
+                <tbody id="ml-results-body">
+                    <!-- Results injected here via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div style="margin-top: 3rem;">
+        <h3>Hospital Gallery</h3>
+        <div class="card" style="margin-top: 1rem;">
+            <p>Upload photos of your hospital/events!</p>
+            <form method="post" enctype="multipart/form-data"
+                style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+                {% csrf_token %}
+                <input type="hidden" name="upload_image" value="true">
+                <input type="file" name="image" required
+                    style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 5px;">
+                <input type="text" name="caption" placeholder="Caption (optional)"
+                    style="background: rgba(255,255,255,0.1); border: none; padding: 0.5rem; color: white; border-radius: 5px;">
+                <button type="submit" class="btn" style="padding: 0.5rem 1rem;">Upload</button>
+            </form>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                {% for img in gallery_images %}
+                <div style="position: relative; border-radius: 10px; overflow: hidden;">
+                    <img src="{{ img.image.url }}" alt="{{ img.caption }}"
+                        style="width: 100%; height: 150px; object-fit: cover;">
+                    <a href="{% url 'delete_image' img.id %}" onclick="return confirm('Delete this image?')"
+                        style="position: absolute; top: 5px; right: 5px; background: red; color: white; width: 20px; height: 20px; text-align: center; line-height: 20px; border-radius: 50%; text-decoration: none;">&times;</a>
+                    {% if img.caption %}
+                    <div
+                        style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); padding: 0.3rem; font-size: 0.8rem; text-align: center;">
+                        {{ img.caption }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p>No photos uploaded yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Shared Stats -->
+    {% include 'includes/shared_stats.html' %}
+</section>
+
+<script>
+    function fetchRecommendations() {
+        const bg = document.getElementById('ml-blood-group').value;
+        const loc = document.getElementById('ml-location').value;
+        const resultsDiv = document.getElementById('ml-results');
+        const resultsBody = document.getElementById('ml-results-body');
+        
+        if (!bg || !loc) {
+            alert('Please select a Blood Group and enter a Location.');
+            return;
+        }
+        
+        resultsBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 1rem;">Fetching recommendations using ML...</td></tr>';
+        resultsDiv.style.display = 'block';
+        
+        fetch(`/recommend-donors/?blood_group=${encodeURIComponent(bg)}&location=${encodeURIComponent(loc)}`)
+            .then(res => res.json())
+            .then(data => {
+                resultsBody.innerHTML = '';
+                if (data.error) {
+                    resultsBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 1rem; color: red;">Error: ${data.error}</td></tr>`;
+                    return;
+                }
+                
+                if (data.recommendations.length === 0) {
+                    resultsBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 1rem;">No matching donors found.</td></tr>';
+                    return;
+                }
+                
+                data.recommendations.forEach(donor => {
+                    const daysStr = donor.days_since_last_donation >= 9999 ? 'Never Donated' : `${donor.days_since_last_donation} days`;
+                    resultsBody.innerHTML += `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <td style="padding: 1rem;">${donor.name}</td>
+                            <td style="padding: 1rem; font-weight: bold; color: #e74c3c;">${donor.blood_group}</td>
+                            <td style="padding: 1rem;">${donor.location}</td>
+                            <td style="padding: 1rem;">${daysStr}</td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(err => {
+                resultsBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 1rem; color: red;">Failed to fetch data.</td></tr>`;
+            });
+    }
+</script>
+
+{% include 'includes/vision_banner.html' %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="display: flex; justify-content: center; align-items: center; min-height: 80vh; padding-top: 100px;">
+    <div class="form-box">
+        <h2>Donor Registration</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="input-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div style="color: #ff6b6b; font-size: 0.8rem;">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn" style="width: 100%;">Register</button>
+        </form>
+        <div style="margin-top: 1rem; text-align: center;">
+            <a href="{% url 'login' %}" style="color: var(--primary);">Already have an account? Login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

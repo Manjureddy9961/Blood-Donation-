@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="display: flex; justify-content: center; align-items: center; min-height: 80vh; padding-top: 100px;">
+    <div class="form-box">
+        <h2>Hospital Registration</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="input-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.name == 'icu_availability' or field.name == 'mobile_van_availability' %}
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 5px;">
+                    {{ field }}
+                    <span>Yes</span>
+                </div>
+                {% else %}
+                {{ field }}
+                {% endif %}
+
+                {% if field.errors %}
+                <div style="color: #ff6b6b; font-size: 0.8rem;">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn" style="width: 100%;">Register</button>
+        </form>
+        <div style="margin-top: 1rem; text-align: center;">
+            <a href="{% url 'login' %}" style="color: var(--primary);">Already have an account? Login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
