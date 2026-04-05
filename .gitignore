@@ -23,3 +23,10 @@ staticfiles/
 .DS_Store
 *.sublime-project
 *.sublime-workspace
+
+__pycache__/
+*.pyc
+db.sqlite3
+venv/
+.env
+staticfiles/

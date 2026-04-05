@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-1g(_o3ukuqd0(uifk_7b*1&ebnjld$@z=s)mk^6$#^9d2xpkn&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -124,6 +124,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 import os
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # SECURITY WARNING: unexpected expenses may occur if you expose this key.
 # Get your key from: https://aistudio.google.com/app/apikey
 GEMINI_API_KEY = "AIzaSyBtS1znDHbCvO-2LrVOcYjfv_CJ5jshs5g" 
